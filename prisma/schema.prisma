@@ -1,0 +1,130 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum AdminRole {
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum CourseCategory {
+  GENERAL
+  TRAINING_CARD
+}
+
+enum CourseStatus {
+  RECRUITING
+  SCHEDULED
+  CLOSED
+}
+
+enum InquiryStatus {
+  NEW
+  CHECKING
+  COUNSELING_DONE
+  ENROLLED
+  HOLD
+}
+
+enum TrainingCardOwnership {
+  YES
+  NO
+  UNKNOWN
+}
+
+model Admin {
+  id           String    @id @default(uuid()) @db.Uuid
+  username     String    @unique @db.VarChar(50)
+  passwordHash String    @map("password_hash") @db.VarChar(255)
+  name         String    @db.VarChar(50)
+  role         AdminRole @default(ADMIN)
+  isActive     Boolean   @default(true) @map("is_active")
+  lastLoginAt  DateTime? @map("last_login_at") @db.Timestamptz(6)
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  createdCourses Course[]           @relation("CourseCreatedBy")
+  updatedCourses Course[]           @relation("CourseUpdatedBy")
+  inquiryLogs    InquiryStatusLog[]
+
+  @@map("admins")
+}
+
+model Course {
+  id                   String         @id @default(uuid()) @db.Uuid
+  title                String         @db.VarChar(150)
+  slug                 String         @unique @db.VarChar(180)
+  category             CourseCategory
+  summary              String         @db.VarChar(300)
+  description          String
+  target               String?
+  curriculum           String?
+  outcome              String?
+  startDate            DateTime?      @map("start_date") @db.Date
+  duration             String?        @db.VarChar(100)
+  schedule             String?        @db.VarChar(100)
+  capacity             Int?
+  price                Int?
+  supportsTrainingCard Boolean        @default(false) @map("supports_training_card")
+  status               CourseStatus   @default(SCHEDULED)
+  isPublished          Boolean        @default(true) @map("is_published")
+  displayOrder         Int            @default(0) @map("display_order")
+  createdById          String?        @map("created_by") @db.Uuid
+  updatedById          String?        @map("updated_by") @db.Uuid
+  createdAt            DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt            DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  createdBy Admin?    @relation("CourseCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy Admin?    @relation("CourseUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+  inquiries Inquiry[]
+
+  @@index([category])
+  @@index([status])
+  @@index([isPublished])
+  @@index([title])
+  @@map("courses")
+}
+
+model Inquiry {
+  id                    String                 @id @default(uuid()) @db.Uuid
+  courseId              String?                @map("course_id") @db.Uuid
+  name                  String                 @db.VarChar(50)
+  phone                 String                 @db.VarChar(30)
+  email                 String?                @db.VarChar(100)
+  trainingCardOwnership TrainingCardOwnership? @map("training_card_ownership")
+  preferredContactTime  String?                @map("preferred_contact_time") @db.VarChar(100)
+  message               String
+  privacyAgreed         Boolean                @map("privacy_agreed")
+  status                InquiryStatus          @default(NEW)
+  adminMemo             String?                @map("admin_memo")
+  createdAt             DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt             DateTime               @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  course Course?            @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  logs   InquiryStatusLog[]
+
+  @@index([courseId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("inquiries")
+}
+
+model InquiryStatusLog {
+  id             String         @id @default(uuid()) @db.Uuid
+  inquiryId      String         @map("inquiry_id") @db.Uuid
+  adminId        String?        @map("admin_id") @db.Uuid
+  previousStatus InquiryStatus? @map("previous_status")
+  nextStatus     InquiryStatus  @map("next_status")
+  memo           String?
+  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  inquiry Inquiry @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+  admin   Admin?  @relation(fields: [adminId], references: [id], onDelete: SetNull)
+
+  @@index([inquiryId])
+  @@map("inquiry_status_logs")
+}
