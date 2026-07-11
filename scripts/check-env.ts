@@ -23,6 +23,31 @@ const databaseUrl = process.env.DATABASE_URL ?? "";
 const directUrl = process.env.DIRECT_URL ?? "";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
 const sessionSecret = process.env.SESSION_SECRET ?? "";
+const adminInitialPassword = process.env.ADMIN_INITIAL_PASSWORD ?? "";
+
+const placeholderPatterns = [
+  "[YOUR-PASSWORD]",
+  "SUPABASE_TRANSACTION_POOLER_URL_PORT_6543",
+  "SUPABASE_SESSION_POOLER_URL_PORT_5432",
+  "change-this-admin-password",
+  "change-this-password",
+];
+
+const placeholderVariables = [
+  ["DATABASE_URL", databaseUrl],
+  ["DIRECT_URL", directUrl],
+  ["ADMIN_INITIAL_PASSWORD", adminInitialPassword],
+].filter(([, value]) =>
+  placeholderPatterns.some((placeholder) => value.includes(placeholder)),
+);
+
+if (placeholderVariables.length > 0) {
+  console.error("Replace placeholder values before connecting to Supabase:");
+  for (const [name] of placeholderVariables) {
+    console.error(`- ${name}`);
+  }
+  process.exit(1);
+}
 
 if (!databaseUrl.startsWith("postgresql://") && !databaseUrl.startsWith("postgres://")) {
   console.error("DATABASE_URL must be a PostgreSQL connection string.");
