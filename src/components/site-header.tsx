@@ -12,10 +12,10 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
         <Link href="/" className="flex items-center gap-3">
-          <span className="flex size-9 items-center justify-center rounded-md bg-primary text-sm font-black text-white">
+          <span className="flex size-9 items-center justify-center rounded-md bg-slate-950 text-sm font-black text-white">
             B
           </span>
-          <span className="text-lg font-black text-primary-dark">비트컴퓨터학원</span>
+          <span className="text-lg font-black text-slate-950">비트컴퓨터학원</span>
         </Link>
 
         <nav className="hidden items-center gap-7 text-sm font-bold text-slate-700 md:flex">

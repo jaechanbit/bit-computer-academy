@@ -9,8 +9,8 @@ export const inquiryStatusLabels: Record<InquiryStatus, string> = {
 };
 
 export const trainingCardOwnershipLabels: Record<TrainingCardOwnership, string> = {
-  YES: "예",
-  NO: "아니오",
+  YES: "있음",
+  NO: "없음",
   UNKNOWN: "잘 모르겠음",
 };
 
