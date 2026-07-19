@@ -13,16 +13,12 @@ export default async function Home() {
     <PageShell>
       <section className="bg-[#07111f] text-white">
         <div className="mx-auto max-w-6xl px-5 py-14 sm:py-16 lg:py-20">
-          <div className="max-w-5xl">
+          <div className="max-w-none">
             <p className="text-sm font-black text-teal-300">비트컴퓨터학원 · 남원 IT 교육</p>
-            <h1 className="mt-5 max-w-5xl text-4xl font-black leading-tight sm:text-6xl">
-              자격증부터 실무까지,
-              <br />
-              필요한 컴퓨터 교육을
-              <br />
-              한곳에서 안내합니다.
+            <h1 className="mt-5 max-w-[1120px] text-4xl font-black leading-tight sm:text-6xl lg:text-7xl">
+              자격증부터 실무까지, 필요한 컴퓨터 교육을 한곳에서 안내합니다.
             </h1>
-            <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-200">
+            <p className="mt-6 max-w-5xl text-lg leading-8 text-slate-200">
               ITQ, 컴퓨터활용능력, 워드프로세서, 엑셀실무, 포토샵, 일러스트 과정과
               국민내일배움카드 과정을 확인하고 간단한 상담 문의를 남겨보세요.
             </p>
