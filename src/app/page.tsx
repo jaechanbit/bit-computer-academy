@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CourseCard } from "@/components/course-card";
+import { HeroTrainingSlider } from "@/components/hero-training-slider";
 import { PageShell } from "@/components/page-shell";
 import { getPublicCourses, PublicCourse } from "@/lib/public-courses";
 
@@ -47,23 +48,7 @@ export default async function Home() {
     <PageShell>
       <section className="bg-[#07111f] text-white">
         <div className="mx-auto max-w-6xl px-5 py-14 sm:py-16 lg:py-20">
-          <div className="max-w-none">
-            <p className="text-sm font-black text-teal-300">비트컴퓨터학원 · 남원 IT 교육</p>
-            <h1 className="mt-5 max-w-[1120px] text-4xl font-black leading-tight sm:text-6xl lg:text-7xl">
-              자격증부터 실무까지, 필요한 컴퓨터 교육을 한곳에서 안내합니다.
-            </h1>
-            <p className="mt-6 max-w-5xl text-lg leading-8 text-slate-200">
-              ITQ, 컴퓨터활용능력, 워드프로세서, 엑셀실무, 포토샵, 일러스트 과정과 국비교육과정을 확인하고 간단한 상담 문의를 남겨보세요.
-            </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link className="inline-flex h-12 items-center justify-center rounded-md bg-teal-300 px-6 font-black text-slate-950" href="/courses">
-                교육과정 보기
-              </Link>
-              <Link className="inline-flex h-12 items-center justify-center rounded-md border border-white/25 px-6 font-black text-white" href="/inquiry">
-                상담 문의하기
-              </Link>
-            </div>
-          </div>
+          <HeroTrainingSlider courses={trainingCardCourses} />
         </div>
       </section>
 
