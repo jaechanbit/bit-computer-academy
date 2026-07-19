@@ -3,33 +3,28 @@ import { CourseCard } from "@/components/course-card";
 import { PageShell } from "@/components/page-shell";
 import { getPublicCourses } from "@/lib/public-courses";
 
-const recommendedSlugs = ["itq", "computer-literacy-level-1", "itq-master"];
-
 export default async function Home() {
   const courses = await getPublicCourses();
   const featuredCourses = courses.slice(0, 6);
-  const recommendedCourses = recommendedSlugs
-    .map((slug) => courses.find((course) => course.slug === slug))
-    .filter((course): course is NonNullable<typeof course> => Boolean(course));
   const generalCount = courses.filter((course) => course.category === "GENERAL").length;
   const trainingCardCount = courses.filter((course) => course.category === "TRAINING_CARD").length;
 
   return (
     <PageShell>
       <section className="bg-[#07111f] text-white">
-        <div className="mx-auto grid max-w-6xl gap-10 px-5 py-16 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:py-24">
-          <div>
+        <div className="mx-auto max-w-6xl px-5 py-14 sm:py-16 lg:py-20">
+          <div className="max-w-5xl">
             <p className="text-sm font-black text-teal-300">비트컴퓨터학원 · 남원 IT 교육</p>
-            <h1 className="mt-5 max-w-4xl text-4xl font-black leading-tight sm:text-6xl">
-              자격증부터 실무까지
+            <h1 className="mt-5 max-w-5xl text-4xl font-black leading-tight sm:text-6xl">
+              자격증부터 실무까지,
               <br />
-              필요한 과정만
+              필요한 컴퓨터 교육을
               <br />
-              정확하게 안내합니다.
+              한곳에서 안내합니다.
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-200">
-              ITQ, 컴퓨터활용능력, 워드프로세서, 엑셀실무와 그래픽 과정을 한곳에서 확인하고
-              간단한 상담 문의까지 바로 남길 수 있습니다.
+            <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-200">
+              ITQ, 컴퓨터활용능력, 워드프로세서, 엑셀실무, 포토샵, 일러스트 과정과
+              국민내일배움카드 과정을 확인하고 간단한 상담 문의를 남겨보세요.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link className="inline-flex h-12 items-center justify-center rounded-md bg-teal-300 px-6 font-black text-slate-950" href="/courses">
@@ -40,33 +35,6 @@ export default async function Home() {
               </Link>
             </div>
           </div>
-
-          <aside className="rounded-md border border-white/10 bg-white/[0.04] p-5">
-            <div className="flex items-end justify-between gap-4">
-              <div>
-                <p className="text-sm font-black text-teal-300">추천 과정</p>
-                <h2 className="mt-2 text-2xl font-black">처음 많이 찾는 과정</h2>
-              </div>
-              <Link href="/courses" className="text-sm font-bold text-slate-300 hover:text-white">
-                전체 보기
-              </Link>
-            </div>
-            <div className="mt-5 grid gap-3">
-              {recommendedCourses.map((course) => (
-                <Link
-                  key={course.slug}
-                  href={`/courses/${course.slug}`}
-                  className="rounded-md border border-white/10 bg-white/[0.06] p-4 transition hover:border-teal-300 hover:bg-white/[0.1]"
-                >
-                  <span className="text-xs font-black text-teal-200">
-                    {course.supportsTrainingCard ? "국민내일배움카드" : "일반과정"}
-                  </span>
-                  <strong className="mt-1 block text-lg font-black">{course.title}</strong>
-                  <span className="mt-2 block text-sm leading-6 text-slate-300">{course.summary}</span>
-                </Link>
-              ))}
-            </div>
-          </aside>
         </div>
       </section>
 
