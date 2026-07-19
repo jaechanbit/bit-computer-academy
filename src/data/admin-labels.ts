@@ -16,7 +16,7 @@ export const trainingCardOwnershipLabels: Record<TrainingCardOwnership, string> 
 
 export const courseCategoryLabels: Record<CourseCategory, string> = {
   GENERAL: "일반과정",
-  TRAINING_CARD: "국민내일배움카드과정",
+  TRAINING_CARD: "국비교육과정",
 };
 
 export const courseStatusLabels: Record<CourseStatus, string> = {

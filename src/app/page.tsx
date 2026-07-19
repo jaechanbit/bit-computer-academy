@@ -1,13 +1,47 @@
 import Link from "next/link";
 import { CourseCard } from "@/components/course-card";
 import { PageShell } from "@/components/page-shell";
-import { getPublicCourses } from "@/lib/public-courses";
+import { getPublicCourses, PublicCourse } from "@/lib/public-courses";
+
+function FeaturedCourseGroup({
+  title,
+  description,
+  href,
+  courses,
+}: {
+  title: string;
+  description: string;
+  href: string;
+  courses: PublicCourse[];
+}) {
+  if (courses.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="mt-10">
+      <div className="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+        <div>
+          <p className="text-sm font-black text-primary">{title}</p>
+          <h3 className="mt-2 text-2xl font-black text-slate-950">{description}</h3>
+        </div>
+        <Link href={href} className="text-sm font-bold text-primary">
+          더 보기
+        </Link>
+      </div>
+      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {courses.map((course) => (
+          <CourseCard key={course.slug} course={course} />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default async function Home() {
   const courses = await getPublicCourses();
-  const featuredCourses = courses.slice(0, 6);
-  const generalCount = courses.filter((course) => course.category === "GENERAL").length;
-  const trainingCardCount = courses.filter((course) => course.category === "TRAINING_CARD").length;
+  const generalCourses = courses.filter((course) => course.category === "GENERAL");
+  const trainingCardCourses = courses.filter((course) => course.category === "TRAINING_CARD");
 
   return (
     <PageShell>
@@ -19,8 +53,7 @@ export default async function Home() {
               자격증부터 실무까지, 필요한 컴퓨터 교육을 한곳에서 안내합니다.
             </h1>
             <p className="mt-6 max-w-5xl text-lg leading-8 text-slate-200">
-              ITQ, 컴퓨터활용능력, 워드프로세서, 엑셀실무, 포토샵, 일러스트 과정과
-              국민내일배움카드 과정을 확인하고 간단한 상담 문의를 남겨보세요.
+              ITQ, 컴퓨터활용능력, 워드프로세서, 엑셀실무, 포토샵, 일러스트 과정과 국비교육과정을 확인하고 간단한 상담 문의를 남겨보세요.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link className="inline-flex h-12 items-center justify-center rounded-md bg-teal-300 px-6 font-black text-slate-950" href="/courses">
@@ -53,13 +86,13 @@ export default async function Home() {
         <div className="grid gap-4 md:grid-cols-3">
           <Link href="/courses?category=GENERAL" className="rounded-md border border-slate-200 bg-white p-5 transition hover:border-primary">
             <p className="text-sm font-black text-slate-500">일반과정</p>
-            <p className="mt-2 text-3xl font-black text-slate-950">{generalCount}개 과정</p>
+            <p className="mt-2 text-3xl font-black text-slate-950">{generalCourses.length}개 과정</p>
             <p className="mt-3 text-sm leading-6 text-slate-600">자격증과 실무 활용을 목적에 맞게 선택합니다.</p>
           </Link>
           <Link href="/courses?category=TRAINING_CARD" className="rounded-md border border-slate-200 bg-white p-5 transition hover:border-primary">
-            <p className="text-sm font-black text-slate-500">국민내일배움카드</p>
-            <p className="mt-2 text-3xl font-black text-slate-950">{trainingCardCount}개 과정</p>
-            <p className="mt-3 text-sm leading-6 text-slate-600">국비지원 가능 여부와 수강 절차를 상담합니다.</p>
+            <p className="text-sm font-black text-slate-500">국비교육과정</p>
+            <p className="mt-2 text-3xl font-black text-slate-950">{trainingCardCourses.length}개 과정</p>
+            <p className="mt-3 text-sm leading-6 text-slate-600">국민내일배움카드 과정과 상담 절차를 확인합니다.</p>
           </Link>
           <Link href="/inquiry" className="rounded-md border border-slate-950 bg-slate-950 p-5 text-white transition hover:bg-slate-800">
             <p className="text-sm font-black text-teal-300">상담 문의</p>
@@ -71,15 +104,25 @@ export default async function Home() {
         <div className="mt-14 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
             <p className="text-sm font-black text-primary">모집중 과정</p>
-            <h2 className="mt-2 text-3xl font-black text-slate-950">주요 교육과정</h2>
+            <h2 className="mt-2 text-3xl font-black text-slate-950">카테고리별 주요 교육과정</h2>
           </div>
-          <Link href="/courses" className="text-sm font-bold text-primary">전체 보기</Link>
+          <Link href="/courses" className="text-sm font-bold text-primary">
+            전체 보기
+          </Link>
         </div>
-        <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {featuredCourses.map((course) => (
-            <CourseCard key={course.slug} course={course} />
-          ))}
-        </div>
+
+        <FeaturedCourseGroup
+          title="국비교육과정"
+          description="국민내일배움카드로 준비하는 과정"
+          href="/courses?category=TRAINING_CARD"
+          courses={trainingCardCourses.slice(0, 3)}
+        />
+        <FeaturedCourseGroup
+          title="일반과정"
+          description="자격증과 실무 활용을 위한 과정"
+          href="/courses?category=GENERAL"
+          courses={generalCourses.slice(0, 3)}
+        />
       </section>
 
       <section className="bg-white">
