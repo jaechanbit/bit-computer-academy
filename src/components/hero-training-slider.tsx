@@ -63,32 +63,42 @@ export function HeroTrainingSlider({ courses }: HeroTrainingSliderProps) {
 
     const timer = window.setInterval(() => {
       setIsTransitioning(true);
-      setActiveIndex((current) => current + 1);
+      setActiveIndex((current) => {
+        if (current >= slides.length) {
+          return 1;
+        }
+
+        return current + 1;
+      });
     }, 5200);
 
     return () => window.clearInterval(timer);
   }, [slides.length]);
 
-  function handleTransitionEnd() {
+  useEffect(() => {
     if (activeIndex !== slides.length) {
       return;
     }
 
-    setIsTransitioning(false);
-    setActiveIndex(0);
-    window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(() => setIsTransitioning(true));
-    });
-  }
+    const resetTimer = window.setTimeout(() => {
+      setIsTransitioning(false);
+      setActiveIndex(0);
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => setIsTransitioning(true));
+      });
+    }, 760);
+
+    return () => window.clearTimeout(resetTimer);
+  }, [activeIndex, slides.length]);
 
   const visibleIndex = activeIndex % slides.length;
+  const safeActiveIndex = Math.min(activeIndex, slides.length);
 
   return (
     <div className="overflow-hidden" aria-roledescription="carousel" aria-label="비트컴퓨터학원 주요 교육과정">
       <div
         className={`flex ${isTransitioning ? "transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]" : ""}`}
-        style={{ transform: `translateX(-${activeIndex * 100}%)` }}
-        onTransitionEnd={handleTransitionEnd}
+        style={{ transform: `translateX(-${safeActiveIndex * 100}%)` }}
       >
         {loopSlides.map((slide, index) => (
           <div key={`${slide.title}-${index}`} className="min-w-full">
